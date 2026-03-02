@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HashSwap • Docs</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <a href="/#swap" class="brand__link">
+        <img class="brand__logo" src="/assets/logo.png" alt="HashSwap" onerror="this.style.display='none'"/>
+        <div class="brand__name">HashSwap</div>
+      </a>
+    </div>
+
+    <nav class="nav">
+      <a class="nav__link" href="/pages/metrics.html">Metrics</a>
+      <a class="nav__link" href="/#swap">Swap</a>
+      <a class="nav__link" href="/#liquidity">Liquidity</a>
+      <a class="nav__link" href="/#faucet">Faucet</a>
+      <a class="nav__link is-active" href="/pages/docs.html">Docs</a>
+    </nav>
+
+    <div class="topbar__right">
+      <div class="pill">Hedera Testnet</div>
+      <a class="btn btn--ghost" href="/#swap">Back</a>
+    </div>
+  </header>
+
+  <main class="appMain">
+    <div class="workArea workArea--top">
+      <section class="view is-active" aria-label="Docs view">
+        <div class="view__content view__content--wide">
+
+          <!-- Intro -->
+          <section class="block">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div>
+                <div class="muted" style="font-weight:900;font-size:12px;">Project Docs</div>
+                <h1 class="hTitle">HashSwap</h1>
+                <div class="muted" style="margin-top:6px; line-height:1.6;">
+                  HashSwap is a minimal <b>stable swap</b> demo built <b>natively on Hedera</b> using <b>HTS tokens</b>.
+                  Users always <b>sign in wallet</b>; the frontend never stores private keys.
+                </div>
+              </div>
+
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <a class="btn" href="/#swap">Open App</a>
+                <a class="btn btn--ghost" href="/pages/metrics.html">View Metrics</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- Problem / Solution -->
+          <section class="block">
+            <div class="block__title">Problem & solution</div>
+            <div class="muted" style="line-height:1.65;">
+              <div style="margin-bottom:10px;">
+                <b>Problem:</b> Hedera needs simple, HTS-native liquidity rails for stable-to-stable swaps and
+                commerce-like settlement flows (transparent reserves, low fees, fast finality).
+              </div>
+              <div>
+                <b>Solution:</b> HashSwap provides a lightweight stable AMM demo (hUSD/hEUR) with wallet-signed actions,
+                testable liquidity, faucet onboarding, and Mirror Node-based metrics for on-chain verification.
+              </div>
+            </div>
+          </section>
+
+          <!-- Why Hedera -->
+          <section class="block">
+            <div class="block__title">Why Hedera</div>
+            <div class="muted" style="line-height:1.65;">
+              <ul style="margin:0; padding-left:18px;">
+                <li><b>HTS-native tokens</b> (no wrapped assets) + clear token accounting.</li>
+                <li><b>Low, predictable fees</b> paid in HBAR — friendly for frequent swaps.</li>
+                <li><b>Fast finality</b> and good UX for consumer/commercial flows.</li>
+                <li><b>Mirror Node transparency</b> for public analytics (TVL, reserves, tx history).</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- What it includes -->
+          <section class="block">
+            <div class="block__title">What HashSwap includes</div>
+            <div class="muted" style="line-height:1.65;">
+              <ul style="margin:0; padding-left:18px;">
+                <li><b>Swap</b>: hUSD ↔ hEUR quoting + wallet-signed swap execution.</li>
+                <li><b>Liquidity</b>: add liquidity via wallet-sign; UI shows <b>your deposited amounts</b> (not LP share).</li>
+                <li><b>Faucet</b>: claim hUSD or hEUR via wallet-sign; rate-limited onboarding.</li>
+                <li><b>Metrics</b>: TVL/reserves + explorer/Mirror links for on-chain proof.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Tokens -->
+          <section class="block">
+            <div class="block__title">Tokens (HTS)</div>
+            <div class="muted" style="line-height:1.65;">
+              Two demo stable tokens on Hedera testnet:
+              <ul style="margin:8px 0 0 0; padding-left:18px;">
+                <li><b>hUSD</b> — mock USD stable token</li>
+                <li><b>hEUR</b> — mock EUR stable token</li>
+              </ul>
+              <div style="margin-top:10px;">
+                Supply, seeding amounts, faucet caps, and fee parameters are configured in the backend config.
+              </div>
+            </div>
+          </section>
+
+          <!-- User flows -->
+          <section class="block">
+            <div class="block__title">User flows</div>
+            <div class="muted" style="line-height:1.65;">
+              <ul style="margin:0; padding-left:18px;">
+                <li><b>Connect</b> wallet → shows Account ID (0.0.xxxx).</li>
+                <li><b>Faucet</b> → click → sign in wallet → receive hUSD/hEUR.</li>
+                <li><b>Swap</b> → enter amount → auto-estimated out → sign swap.</li>
+                <li><b>Liquidity</b> → add amounts (auto ratio) → sign deposit.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Security -->
+          <section class="block">
+            <div class="block__title">Security model</div>
+            <div class="muted" style="line-height:1.65;">
+              <ul style="margin:0; padding-left:18px;">
+                <li><b>Non-custodial frontend</b>: no private keys in browser.</li>
+                <li><b>Wallet-sign required</b> for any asset-moving action.</li>
+                <li><b>Backend relays what the user signed</b> (submit signed bytes → schedule execute).</li>
+                <li>Optional <b>rate limits</b> & basic checks to reduce faucet abuse.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Milestones / Deliverables -->
+          <section class="block">
+            <div class="block__title">Milestone deliverables (for reviewers)</div>
+            <div class="muted" style="line-height:1.65;">
+              <ul style="margin:0; padding-left:18px;">
+                <li><b>Testnet app</b>: Swap + Liquidity + Faucet + Metrics (this deployment).</li>
+                <li><b>On-chain proof</b>: reserves/TVL and transaction history via Mirror Node links (see <b>Metrics</b>).</li>
+                <li><b>Demo video</b>: recorded walkthrough (Loom) showing connect → faucet → swap → liquidity.</li>
+                <li><b>Repository</b>: GitHub code for frontend + backend + deployment notes.</li>
+              </ul>
+              <div style="margin-top:10px;">
+                Tip: reviewers can verify pool state quickly in <b>Metrics</b> using the provided Mirror Node URLs.
+              </div>
+            </div>
+          </section>
+
+          <!-- Roadmap -->
+          <section class="block">
+            <div class="block__title">Roadmap</div>
+            <div class="muted" style="line-height:1.65;">
+              <ol style="margin:0; padding-left:18px;">
+                <li><b>v1 (Testnet) — Completed</b>: stable swap + faucet + liquidity + metrics.</li>
+                <li><b>v1.1</b>: improve liquidity UX + clearer errors + better deposit history.</li>
+                <li><b>v2 (Mainnet)</b>: mainnet pools + fee model + expanded analytics dashboard.</li>
+                <li><b>v3 (Traction)</b>: multiple stable pools + growth dashboard + ecosystem integrations.</li>
+              </ol>
+            </div>
+          </section>
+
+          <div class="muted" style="text-align:center; margin-top:14px; font-size:12px;">
+            HashSwap • HTS-native stable demo • Testnet
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+
+</body>
+</html>

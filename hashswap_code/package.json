@@ -1,0 +1,20 @@
+{
+  "name": "hashswap_code",
+  "version": "1.0.0",
+  "description": "HashSwap HTS-native backend",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@hashgraph/sdk": "^2.80.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

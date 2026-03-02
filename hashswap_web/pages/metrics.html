@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HashSwap • Metrics</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <a href="/#swap" class="brand__link">
+        <img class="brand__logo" src="/assets/logo.png" alt="HashSwap" onerror="this.style.display='none'"/>
+        <div class="brand__name">HashSwap</div>
+      </a>
+    </div>
+
+    <nav class="nav">
+      <a class="nav__link is-active" href="/pages/metrics.html">Metrics</a>
+      <a class="nav__link" href="/#swap">Swap</a>
+      <a class="nav__link" href="/#liquidity">Liquidity</a>
+      <a class="nav__link" href="/#faucet">Faucet</a>
+      <a class="nav__link" href="/pages/docs.html">Docs</a>
+    </nav>
+
+    <div class="topbar__right">
+      <div class="pill">Hedera Testnet</div>
+      <a class="btn btn--ghost" href="/#swap">Back</a>
+    </div>
+  </header>
+
+  <main class="appMain">
+    <div class="workArea workArea--top">
+      <section class="view is-active" aria-label="Metrics view">
+        <div class="view__content view__content--wide">
+
+          <!-- Quick verification -->
+          <section class="block">
+            <div class="block__title">Quick verification (reviewers)</div>
+            <div class="muted" style="line-height:1.65;">
+              <ol style="margin:0; padding-left:18px;">
+                <li>Open <b>Pool balances</b> and verify reserves match the table below.</li>
+                <li>Open <b>Pool transactions</b> to verify swap/liquidity/faucet activity.</li>
+                <li>Open <b>Token pages</b> to verify HTS token IDs and holders.</li>
+              </ol>
+              <div style="margin-top:10px;">
+                Status: <b id="kpiStatus">Loading…</b>
+                <span class="muted">• Last updated:</span> <b id="kpiUpdated">—</b>
+              </div>
+            </div>
+          </section>
+
+          <!-- KPIs -->
+          <section class="kpiGrid">
+            <div class="kpiCard">
+              <div class="kpiCard__k">TVL (approx)</div>
+              <div class="kpiCard__v" id="kpiTvl">—</div>
+              <div class="kpiCard__s">Stable reserves (hUSD + hEUR)</div>
+            </div>
+
+            <div class="kpiCard">
+              <div class="kpiCard__k">Volume 24h</div>
+              <div class="kpiCard__v" id="kpiVol24">—</div>
+              <div class="kpiCard__s">Coming soon</div>
+            </div>
+
+            <div class="kpiCard">
+              <div class="kpiCard__k">Unique wallets (24h)</div>
+              <div class="kpiCard__v" id="kpiUsers">—</div>
+              <div class="kpiCard__s">Coming soon</div>
+            </div>
+
+            <div class="kpiCard">
+              <div class="kpiCard__k">Tx count (24h)</div>
+              <div class="kpiCard__v" id="kpiTx">—</div>
+              <div class="kpiCard__s">Coming soon</div>
+            </div>
+          </section>
+
+          <!-- Pools -->
+          <section class="block">
+            <div class="block__title">Pools</div>
+            <div class="tableWrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Pair</th>
+                    <th>Pool Account</th>
+                    <th>Reserve hUSD</th>
+                    <th>Reserve hEUR</th>
+                    <th>TVL (approx)</th>
+                  </tr>
+                </thead>
+                <tbody id="poolsRows">
+                  <tr><td colspan="5">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Small helper row (copy IDs) -->
+            <div class="muted" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <span><b>Tip:</b> Click any link below to verify on Mirror Node.</span>
+              <button class="btn btn--ghost" id="btnCopyAllLinks" type="button" style="padding:8px 10px;">Copy all links</button>
+            </div>
+          </section>
+
+          <!-- Useful Links -->
+          <section class="block">
+            <div class="block__title">Useful Links</div>
+            <div class="linksList" id="linksBox">—</div>
+          </section>
+
+          <div class="muted" style="text-align:center; margin-top:14px; font-size:12px;">
+            HashSwap • Mirror Node metrics • Testnet
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Auto API base:
+    // - local dev: http://127.0.0.1:8787
+    // - deployed:  same-origin "/api"
+    const isLocal = ["localhost", "127.0.0.1"].includes(location.hostname);
+    window.HASHSWAP_METRICS = {
+      apiBase: isLocal ? "http://127.0.0.1:8787" : location.origin
+    };
+  </script>
+
+  <script>
+    // Minimal UX helpers (no dependency on metrics.js internals)
+    function nowIso() {
+      try { return new Date().toISOString().replace("T"," ").replace("Z"," UTC"); }
+      catch { return "—"; }
+    }
+
+    function setStatus(ok, msg) {
+      const elS = document.getElementById("kpiStatus");
+      const elU = document.getElementById("kpiUpdated");
+      if (elS) elS.textContent = ok ? (msg || "OK") : (msg || "Error");
+      if (elU) elU.textContent = nowIso();
+    }
+
+    // Copy all links helper (reads from linksBox text)
+    async function copyText(t) {
+      try { await navigator.clipboard.writeText(t); return true; }
+      catch { return false; }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setStatus(true, "Loading…");
+      const btn = document.getElementById("btnCopyAllLinks");
+      if (btn) {
+        btn.addEventListener("click", async () => {
+          const box = document.getElementById("linksBox");
+          const raw = (box && box.innerText) ? box.innerText.trim() : "";
+          if (!raw) { setStatus(true, "No links to copy"); return; }
+          const ok = await copyText(raw);
+          setStatus(true, ok ? "Copied links" : "Copy failed");
+        });
+      }
+    });
+
+    // When metrics.js finishes fetching, it can call window.HASHSWAP_METRICS_MARK_OK()
+    window.HASHSWAP_METRICS_MARK_OK = () => setStatus(true, "OK");
+    window.HASHSWAP_METRICS_MARK_ERR = () => setStatus(false, "Fetch error");
+  </script>
+
+  <script src="/pages/metrics.js"></script>
+</body>
+</html>

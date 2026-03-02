@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HashSwap</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <!-- Top bar (KEEP Hedera style) -->
+  <header class="topbar">
+    <div class="brand">
+      <a class="brand__link" href="/#swap">
+        <img class="brand__logo" src="./assets/logo.png" alt="HashSwap" onerror="this.style.display='none'" />
+        <div class="brand__name">HashSwap</div>
+      </a>
+    </div>
+
+    <nav class="nav" id="topNav">
+      <a class="nav__link" href="/pages/metrics.html">Metrics</a>
+      <a class="nav__link" href="/#swap">Swap</a>
+      <a class="nav__link" href="/#liquidity">Liquidity</a>
+      <a class="nav__link" href="/#faucet">Faucet</a>
+      <a class="nav__link" href="/pages/docs.html">Docs</a>
+    </nav>
+
+    <div class="topbar__right" style="display:flex;gap:10px;align-items:center">
+      <button class="btn btn--ghost" id="btnConnect" type="button">Connect HashPack</button>
+      <div class="pill" id="pillAccount" style="display:none" title="Connected account">—</div>
+      <div class="pill" title="Hedera Testnet (HTS)">Hedera Testnet</div>
+    </div>
+  </header>
+
+  <main class="appMain">
+    <div class="workArea" id="workArea">
+
+      <!-- ===== VIEW: Swap ===== -->
+      <section class="view" id="view-swap" aria-label="Swap view">
+        <div class="view__content">
+          <section class="card" id="swapCard">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div style="font-weight:900;font-size:18px;">HashSwap</div>
+              <button class="btn btn--ghost" type="button" id="btnResetUi">Reset</button>
+            </div>
+
+            <div class="miniRow" style="margin-top:6px;">
+              <div class="mono" id="miniStatus">Not connected</div>
+              <div class="mono" id="miniBalances">hUSD: 0 | hEUR: 0</div>
+            </div>
+
+            <div class="segTabs" style="margin-top:12px;">
+              <a href="#swap" class="is-active" id="tabSwap">Swap</a>
+              <a href="#liquidity" id="tabLiq">Liquidity</a>
+              <a href="#faucet" id="tabFaucet">Faucet</a>
+            </div>
+
+            <div style="margin-top:14px;">
+              <div style="font-weight:800; margin-bottom:8px;">From</div>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <input class="input" id="swapAmountIn" inputmode="decimal" placeholder="0.0" />
+                <select class="selectPill" id="swapFrom" style="min-width:110px;">
+                  <option value="hUSD">hUSD</option>
+                  <option value="hEUR">hEUR</option>
+                </select>
+              </div>
+              <div class="miniRow">
+                <div>Balance: <span id="balFrom">0</span></div>
+              </div>
+
+              <div style="display:flex;justify-content:center;margin:10px 0;">
+                <button class="btn btn--ghost" id="btnFlip" type="button">⇅</button>
+              </div>
+
+              <div style="font-weight:800; margin-bottom:8px;">To (estimated)</div>
+              <div style="display:flex; gap:12px; align-items:center;">
+                <input class="input" id="swapAmountOut" placeholder="0.0" disabled />
+                <select class="selectPill" id="swapTo" style="min-width:110px;">
+                  <option value="hEUR">hEUR</option>
+                  <option value="hUSD">hUSD</option>
+                </select>
+              </div>
+              <div class="miniRow">
+                <div>Balance: <span id="balTo">0</span></div>
+              </div>
+
+              <div class="miniRow" style="margin-top:12px;">
+                <div>Pool: <span class="mono" id="poolHint">hUSD/hEUR</span></div>
+                <div>
+                  Slippage:
+                  <select class="selectPill" id="swapSlippage">
+                    <option value="auto">Auto</option>
+                    <option value="10">0.10%</option>
+                    <option value="50" selected>0.50%</option>
+                    <option value="100">1.00%</option>
+                    <option value="200">2.00%</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="miniRow">
+                <div>Rate: <span id="rateHint">—</span></div>
+                <div class="mono" id="swapQuoteInfo">—</div>
+              </div>
+
+              <button class="btnPrimary" id="btnSwap" type="button" style="margin-top:12px;">
+                Swap
+              </button>
+
+              <div class="pill" id="swapStatus" style="display:none;margin-top:10px;"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: Liquidity ===== -->
+      <section class="view" id="view-liquidity" aria-label="Liquidity view">
+        <div class="view__content">
+          <section class="card" id="liquidityCard">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div style="font-weight:900;font-size:18px;">Liquidity</div>
+            </div>
+
+            <div class="segTabs" style="margin-top:12px;">
+              <a href="#swap" id="tabSwap2">Swap</a>
+              <a href="#liquidity" class="is-active" id="tabLiq2">Liquidity</a>
+              <a href="#faucet" id="tabFaucet2">Faucet</a>
+            </div>
+
+            <div style="margin-top:14px;">
+              <div style="font-weight:800; margin-bottom:8px;">Pool</div>
+              <select class="input" id="liqPool">
+                <option value="hUSD-hEUR">hUSD / hEUR</option>
+              </select>
+
+              <div class="miniRow">
+                <div>Pool ratio: <span id="poolRatio">—</span></div>
+                <div>Your deposited: <span id="liqUserTotals">—</span></div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <div style="font-weight:800; margin-bottom:8px;">hUSD amount</div>
+                <input class="input" id="liqAddHUSD" inputmode="decimal" placeholder="0.0" />
+                <div class="miniRow">Balance: <span id="balLiqHUSD">0</span></div>
+              </div>
+
+              <div style="margin-top:12px;">
+                <div style="font-weight:800; margin-bottom:8px;">hEUR amount</div>
+                <input class="input" id="liqAddHEUR" inputmode="decimal" placeholder="0.0" />
+                <div class="miniRow">Balance: <span id="balLiqHEUR">0</span></div>
+              </div>
+
+              <div class="miniRow" style="margin-top:10px;">
+                <div>You will add: <span id="willAdd">—</span></div>
+              </div>
+
+              <button class="btnPrimary" id="btnLiquidityAdd" type="button" style="margin-top:12px;">
+                Add Liquidity
+              </button>
+
+              <button class="btn btn--ghost" id="btnLiquidityRefresh" type="button" style="margin-top:10px;width:100%">
+                Refresh Deposits
+              </button>
+
+              <!-- ===== Remove ===== -->
+              <div style="margin-top:14px;border-top:1px solid rgba(0,0,0,.08);padding-top:14px;">
+                <div style="font-weight:900;">Remove</div>
+
+                <div class="miniRow" style="margin-top:8px;">
+                  <div>Remove by %</div>
+                  <select class="selectPill" id="liqRemovePct">
+                    <option value="500">5%</option>
+                    <option value="1000" selected>10%</option>
+                    <option value="2500">25%</option>
+                    <option value="5000">50%</option>
+                    <option value="10000">100%</option>
+                  </select>
+                </div>
+
+                <div class="miniRow">
+                  <div>You will receive:</div>
+                  <div class="mono" id="liqRemovePreview">—</div>
+                </div>
+
+                <button class="btnPrimary" id="btnLiquidityRemove" type="button" style="margin-top:12px;">
+                  Remove Liquidity
+                </button>
+              </div>
+
+              <div class="pill" id="liqStatus" style="display:none;margin-top:10px;"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: Faucet ===== -->
+      <section class="view" id="view-faucet" aria-label="Faucet view">
+        <div class="view__content">
+          <section class="card" id="faucetCard">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div style="font-weight:900;font-size:18px;">Faucet</div>
+              <div class="mono" style="opacity:.75;">Wallet-sign required</div>
+            </div>
+
+            <div class="segTabs" style="margin-top:12px;">
+              <a href="#swap" id="tabSwap3">Swap</a>
+              <a href="#liquidity" id="tabLiq3">Liquidity</a>
+              <a href="#faucet" class="is-active" id="tabFaucet3">Faucet</a>
+            </div>
+
+            <div class="twoCol" style="margin-top:14px;">
+              <div>
+                <div style="font-weight:800; margin-bottom:8px;">Amount hUSD</div>
+                <input class="input" id="faucetAmtHUSD" inputmode="decimal" value="100" />
+              </div>
+              <div>
+                <div style="font-weight:800; margin-bottom:8px;">Amount hEUR</div>
+                <input class="input" id="faucetAmtHEUR" inputmode="decimal" value="100" />
+              </div>
+            </div>
+
+            <button class="btnPrimary" id="btnFaucetHUSD" type="button" style="margin-top:12px;">
+              Faucet hUSD
+            </button>
+            <button class="btnPrimary" id="btnFaucetHEUR" type="button" style="margin-top:10px;">
+              Faucet hEUR
+            </button>
+
+            <div class="pill" id="faucetStatus" style="display:none;margin-top:10px;"></div>
+          </section>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    window.HASHSWAP_CONFIG = {
+      apiBase: "http://127.0.0.1:8787",
+      wcProjectId: "02d98efa25d59c26e9b8652393cc2465"
+    };
+  </script>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
